@@ -21,7 +21,7 @@ java-mode runs, add it to java-mode-hook:
           (lambda ()
             (javarun-mode 1))
 
-If the javac and java commands are not on your systems path, you will
+If the javac and java commands are not on your system path, you will
 also have to set the path to the executables:
 
 (setq javarun-java-path "/path/to/java/installation/")
@@ -29,10 +29,10 @@ also have to set the path to the executables:
 
 USAGE
 
-Javarun provides the command javarun, which tries to compile the Java
-file you're editing. If compilation succeeds, the programs output is
-shown in a popup buffer, otherwise, the compiler error messages are
-shown.
+Javarun provides the command javarun (bound to C-c C-c), which tries
+to compile the Java file you're editing. If compilation succeeds, the
+programs output is shown in a popup buffer. Otherwise, the compiler
+error messages are shown.
 
 The popup buffer may be closed by pressing 'q' and the former window
 configuration will be restored.
