@@ -1,1 +1,38 @@
+DESCRIPTION
+
 Emacs minor mode for quick compilation and running of Java programs.
+
+This is a convenient and light-weight minor mode which allows to
+compile and run Java programs without much disruption of work flow. It
+is mostly intended to be used with small and medium sized command line
+programs.
+
+
+INSTALLATION
+
+Put javarun.el on your load-path:
+
+(add-to-list 'load-path "/path/to/javarun")
+
+If you want javarun-mode to be activated automatically whenever
+java-mode runs, add it to java-mode-hook:
+
+(add-hook 'java-mode-hook
+          (lambda ()
+            (javarun-mode 1))
+
+If the javac and java commands are not on your systems path, you will
+also have to set the path to the executables:
+
+(setq javarun-java-path "/path/to/java/installation/")
+
+
+USAGE
+
+Javarun provides the command javarun, which tries to compile the Java
+file you're editing. If compilation succeeds, the programs output is
+shown in a popup buffer, otherwise, the compiler error messages are
+shown.
+
+The popup buffer may be closed by pressing 'q' and the former window
+configuration will be restored.
