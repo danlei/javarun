@@ -3,7 +3,7 @@
 ;; Copyright (C) 2010 Daniel H. Leidisch
 
 ;; Author: Daniel H. Leidisch <spam AT leidisch DOT net>
-;; Keywords: tools, languages, java
+;; Keywords: languages
 
 ;; This file is NOT part of GNU Emacs.
 
