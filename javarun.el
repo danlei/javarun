@@ -116,21 +116,24 @@ If a positive prefix argument ARGSP is given, read a string of
 command line arguments interactively via the function
 `javarun-read-args'."
   (interactive "p")
-  (if (/= 0 (call-process (concat (file-name-as-directory javarun-java-path)
-                                  javarun-javac-command)
-                          nil "*javac-output*" t
-                          (if (eq system-type 'cygwin)
-                              (concat (file-name-as-directory javarun-cygdir)
-                                      (substring (buffer-file-name) 1))
-                              (buffer-file-name))))
+  (if (/= 0 (javarun-compile))
       (javarun-popup-buffer "*javac-output*")
-      (progn
-        (apply 'call-process
-               javarun-java-command nil "*java-output*" t
-               (file-name-nondirectory
-                (file-name-sans-extension (buffer-file-name)))
-               (when (/= argsp 1) (javarun-read-args))))
-      (javarun-popup-buffer "*java-output*")))
+    (apply 'call-process
+           javarun-java-command nil "*java-output*" t
+           (file-name-nondirectory
+            (file-name-sans-extension (buffer-file-name)))
+           (when (/= argsp 1) (javarun-read-args)))
+    (javarun-popup-buffer "*java-output*")))
+
+(defun javarun-compile ()
+  "Compile file of the current buffer with `javarun-javac-command'."
+  (call-process (concat (file-name-as-directory javarun-java-path)
+                        javarun-javac-command)
+                nil "*javac-output*" t
+                (if (eq system-type 'cygwin)
+                    (concat (file-name-as-directory javarun-cygdir)
+                            (substring (buffer-file-name) 1))
+                  (buffer-file-name))))
 
 (provide 'javarun)
 
