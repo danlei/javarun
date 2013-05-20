@@ -55,12 +55,19 @@ with non-Cygwin Java. It is only relevant, if `system-type' is
 set to cygwin."
   :type '(directory))
 
+(defcustom javarun-clear-java-output nil
+  "If t, clear buffer `*java-output*' before each run."
+  :type '(choice (const :tag "Off" nil)
+                 (const :tag "On" t)))
+
+
 (defvar javarun-old-window-configuration nil
   "The window configuration as it was before a javarun popup.")
 
 (define-derived-mode javarun-popup-mode special-mode "Javarun Output")
 
 (define-key javarun-popup-mode-map (kbd "q") 'javarun-bury-popup-buffer)
+(define-key javarun-popup-mode-map (kbd "c") 'javarun-clear-popup-buffer)
 
 (define-minor-mode javarun-mode
     "Toggle Javarun mode.
@@ -89,6 +96,13 @@ If no BUFFER is given, it defaults to the `current-buffer'."
   (interactive)
   (bury-buffer (or buffer (current-buffer)))
   (set-window-configuration javarun-old-window-configuration))
+
+(defun javarun-clear-popup-buffer (&optional buffer)
+  "Clear the javarun popup buffer or BUFFER, if given."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (with-current-buffer (or buffer (get-buffer "*java-output*"))
+      (erase-buffer))))
 
 (defun javarun-popup-buffer (buffer)
   "Split window vertically and popup BUFFER in a new window.
@@ -125,6 +139,8 @@ If a positive prefix argument ARGSP is given, read a string of
 command line arguments interactively using the function
 `javarun-read-args'."
   (interactive "p")
+  (when javarun-clear-java-output
+    (javarun-clear-popup-buffer))
   (if (not (javarun-compile (javarun-generate-buffer-file-name)))
       (javarun-popup-buffer "*javac-output*")
     (apply 'call-process
