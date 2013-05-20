@@ -51,8 +51,7 @@ set to cygwin.")
 
 (define-derived-mode javarun-popup-mode special-mode "Javarun Output")
 
-(define-key javarun-popup-mode-map (kbd "q") 'javarun-kill-popup-buffer)
-(define-key javarun-popup-mode-map (kbd "Q") 'javarun-burry-popup-buffer)
+(define-key javarun-popup-mode-map (kbd "q") 'javarun-bury-popup-buffer)
 
 (define-minor-mode javarun-mode
     "Toggle Javarun mode.
@@ -69,14 +68,6 @@ results in a popup buffer."
   :lighter " JRun"
   :keymap '(("\C-c\C-c" . javarun)))
 
-(defun javarun-kill-popup-buffer (&optional buffer)
-  "Kill BUFFER and restore old window configuration.
-
-If no BUFFER is given, defaults to the `current-buffer'."
-  (interactive)
-  (kill-buffer (or buffer (current-buffer)))
-  (set-window-configuration javarun-old-window-configuration))
-
 (defun javarun-burry-popup-buffer (&optional buffer)
   "Burry buffer and restore old window configuration.
 
@@ -88,11 +79,10 @@ If no BUFFER is given, defaults to the `current-buffer'."
 (defun javarun-popup-buffer (buffer)
   "Splits window vertically and popups BUFFER in a new window.
 
-The old window configuration is saved in
-`javarun-old-window-configuration'. `javarun-burry-popup-buffer'
-closes the window and buries the buffer;
-`javarun-kill-popup-buffer' closes the popup window and kills the
-buffer. Both restore the old window configuration afterwards."
+The old window configuration is saved in the variable
+`javarun-old-window-configuration'. The function
+`javarun-bury-popup-buffer' closes the window, buries the
+buffer, and restores the old window configuration afterwards."
   (setq javarun-old-window-configuration (current-window-configuration))
   (split-window-vertically)
   (other-window 1)
