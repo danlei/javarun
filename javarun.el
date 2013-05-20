@@ -112,8 +112,9 @@ The program's output (or the compiler error messages, if the
 program didn't compile) are shown in a popup window by
 `javarun-popup-buffer'.
 
-If a positive prefix arg ARGSP is given, reads a string of
-command line arguments interactively via `javarun-read-args'."
+If a positive prefix argument ARGSP is given, read a string of
+command line arguments interactively via the function
+`javarun-read-args'."
   (interactive "p")
   (if (/= 0 (call-process (concat (file-name-as-directory javarun-java-path)
                                   javarun-javac-command)
