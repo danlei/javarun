@@ -31,13 +31,13 @@
   "The path where java and javac can be found.
 
 This variable only needs to be set, if the java and javac
-commands are not on the system path.")
+programs are not on the system path.")
 
-(defvar javarun-javac-command "javac"
-  "The command used to compile the Java program.")
+(defvar javarun-javac-program "javac"
+  "The program used to compile the Java program.")
 
-(defvar javarun-java-command "java"
-  "The command used to run the compiled Java program.")
+(defvar javarun-java-program "java"
+  "The program used to run the compiled Java program.")
 
 (defvar javarun-cygdir ""
   "The Cygwin root directory path.
@@ -119,7 +119,7 @@ command line arguments interactively using the function
   (if (not (javarun-compile (javarun-generate-buffer-file-name)))
       (javarun-popup-buffer "*javac-output*")
     (apply 'call-process
-           javarun-java-command nil "*java-output*" t
+           javarun-java-program nil "*java-output*" t
            (file-name-nondirectory
             (file-name-sans-extension (buffer-file-name)))
            (when (/= argsp 1) (javarun-read-args)))
@@ -140,7 +140,7 @@ has no associated file."
 (defun javarun-compile (java-file)
   "Compile JAVA-FILE if necessary.
 
-Compile JAVA-FILE using `javarun-javac-command', unless there are
+Compile JAVA-FILE using `javarun-javac-program', unless there are
 no changes since last compilation. Return t on success."
   (unless (file-exists-p java-file)
     (error "Java file not found."))
@@ -150,7 +150,7 @@ no changes since last compilation. Return t on success."
                           (nth 5 (file-attributes class-file))))
         t
       (zerop (call-process (concat (file-name-as-directory javarun-java-path)
-                                   javarun-javac-command)
+                                   javarun-javac-program)
                            nil "*javac-output*" t java-file)))))
 
 (provide 'javarun)
