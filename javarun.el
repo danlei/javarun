@@ -76,13 +76,13 @@ Keybindings:
 (defun javarun-bury-popup-buffer (&optional buffer)
   "Bury buffer and restore old window configuration.
 
-If no BUFFER is given, defaults to the `current-buffer'."
+If no BUFFER is given, it defaults to the `current-buffer'."
   (interactive)
   (bury-buffer (or buffer (current-buffer)))
   (set-window-configuration javarun-old-window-configuration))
 
 (defun javarun-popup-buffer (buffer)
-  "Splits window vertically and popups BUFFER in a new window.
+  "Split window vertically and popup BUFFER in a new window.
 
 The old window configuration is saved in the variable
 `javarun-old-window-configuration'. The function
