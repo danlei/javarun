@@ -62,8 +62,13 @@ off the mode.
 
 Javarun is intended to be a useful shortcut when developing small
 command-line Java programs. This minor mode provides the command
-\\[javarun], which will compile and run a Java file and show its
-results in a popup buffer."
+`javarun', which will compile and run a Java file and show its
+results in a popup buffer.
+
+javarun.el is located at URL `http://github.com/danlei/javarun'.
+
+Keybindings:
+\\{javarun-mode}"
   :init-value nil
   :lighter " JRun"
   :keymap '(("\C-c\C-c" . javarun)))
