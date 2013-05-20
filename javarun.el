@@ -68,6 +68,7 @@ set to cygwin."
 
 (define-key javarun-output-mode-map (kbd "q") 'javarun-bury-output-buffer)
 (define-key javarun-output-mode-map (kbd "c") 'javarun-clear-output-buffer)
+(define-key javarun-output-mode-map (kbd "s") 'javarun-save-output-buffer)
 
 (define-minor-mode javarun-mode
     "Toggle Javarun mode.
@@ -103,6 +104,13 @@ If no BUFFER is given, it defaults to the `current-buffer'."
   (let ((inhibit-read-only t))
     (with-current-buffer (or buffer (get-buffer "*java-output*"))
       (erase-buffer))))
+
+(defun javarun-save-output-buffer (&optional buffer)
+  "Copy contents of the output buffer or BUFFER, if given."
+  (interactive)
+  (with-current-buffer (or buffer (get-buffer "*java-output*"))
+    (save-excursion
+      (kill-ring-save (point-min) (point-max)))))
 
 (defun javarun-popup-buffer (&optional buffer)
   "Popup the java output buffer or BUFFER, if given.
