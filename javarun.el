@@ -128,7 +128,9 @@ command line arguments interactively using the function
   (if (not (javarun-compile (javarun-generate-buffer-file-name)))
       (javarun-popup-buffer "*javac-output*")
     (apply 'call-process
-           javarun-java-program nil "*java-output*" t
+           (concat (file-name-as-directory javarun-java-path)
+                   javarun-java-program)
+           nil "*java-output*" t
            (file-name-nondirectory
             (file-name-sans-extension (buffer-file-name)))
            (when (/= argsp 1) (javarun-read-args)))
