@@ -27,24 +27,33 @@
 ;;; Code:
 
 
-(defvar javarun-java-path ""
+(defgroup javarun '()
+  "Java compilation convenience for small command-line programs."
+  :group 'tools
+  :prefix "javarun")
+
+(defcustom javarun-java-path ""
   "The path where java and javac can be found.
 
 This variable only needs to be set, if the java and javac
-programs are not on the system path.")
+programs are not on the system path."
+  :type '(directory))
 
-(defvar javarun-javac-program "javac"
-  "The program used to compile the Java program.")
+(defcustom javarun-javac-program "javac"
+  "The program used to compile the Java program."
+  :type '(file))
 
-(defvar javarun-java-program "java"
-  "The program used to run the compiled Java program.")
+(defcustom javarun-java-program "java"
+  "The program used to run the compiled Java program."
+  :type '(file))
 
-(defvar javarun-cygdir ""
+(defcustom javarun-cygdir "C:/cygwin/"
   "The Cygwin root directory path.
 
 This variable is meant be used with Cygwin Emacs in combination
 with non-Cygwin Java. It is only relevant, if `system-type' is
-set to cygwin.")
+set to cygwin."
+  :type '(directory))
 
 (defvar javarun-old-window-configuration nil
   "The window configuration as it was before a javarun popup.")
