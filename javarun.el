@@ -68,8 +68,8 @@ results in a popup buffer."
   :lighter " JRun"
   :keymap '(("\C-c\C-c" . javarun)))
 
-(defun javarun-burry-popup-buffer (&optional buffer)
-  "Burry buffer and restore old window configuration.
+(defun javarun-bury-popup-buffer (&optional buffer)
+  "Bury buffer and restore old window configuration.
 
 If no BUFFER is given, defaults to the `current-buffer'."
   (interactive)
