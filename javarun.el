@@ -40,7 +40,7 @@ commands are not on the system path.")
   "The command used to run the compiled Java program.")
 
 (defvar javarun-cygdir ""
-  "The cygwin root directory path.
+  "The Cygwin root directory path.
 
 This variable is meant be used with Cygwin Emacs in combination
 with non-Cygwin Java. It is only relevant, if `system-type' is
