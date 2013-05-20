@@ -149,6 +149,9 @@ command line arguments interactively using the function
   (interactive "p")
   (when javarun-clear-java-output
     (javarun-clear-output-buffer))
+  (and (buffer-modified-p)
+       (y-or-n-p "Buffer modified; save? ")
+       (save-buffer))
   (if (not (javarun-compile (javarun-generate-buffer-file-name)))
       (javarun-popup-buffer)
     (apply 'call-process
