@@ -108,15 +108,15 @@ All non-string arguments are evaluated."
 (defun javarun (argsp)
   "Compile, and (if successful) run a Java program.
 
-The program's output (or the compiler error messages, if the
-program didn't compile) are shown in a popup window by
+The program's output (or the compiler error messages, if
+compilation failed) are shown in a popup window by
 `javarun-popup-buffer'.
 
 If a positive prefix argument ARGSP is given, read a string of
-command line arguments interactively via the function
+command line arguments interactively using the function
 `javarun-read-args'."
   (interactive "p")
-  (if (/= 0 (javarun-compile))
+  (if (not (javarun-compile (javarun-generate-buffer-file-name)))
       (javarun-popup-buffer "*javac-output*")
     (apply 'call-process
            javarun-java-command nil "*java-output*" t
@@ -125,15 +125,33 @@ command line arguments interactively via the function
            (when (/= argsp 1) (javarun-read-args)))
     (javarun-popup-buffer "*java-output*")))
 
-(defun javarun-compile ()
-  "Compile file of the current buffer with `javarun-javac-command'."
-  (call-process (concat (file-name-as-directory javarun-java-path)
-                        javarun-javac-command)
-                nil "*javac-output*" t
-                (if (eq system-type 'cygwin)
-                    (concat (file-name-as-directory javarun-cygdir)
-                            (substring (buffer-file-name) 1))
-                  (buffer-file-name))))
+(defun javarun-generate-buffer-file-name (&optional buffer)
+  "Return buffer file name of current buffer or BUFFER.
+
+Mangle the path for use under Cygwin. Throw an error, if BUFFER
+has no associated file."
+  (let* ((buffer-file (or (buffer-file-name (or buffer (current-buffer)))
+                          (error "Buffer has no associated file."))))
+    (if (eq system-type 'cygwin)
+        (concat (file-name-as-directory javarun-cygdir)
+                (substring buffer-file 1))
+      buffer-file)))
+
+(defun javarun-compile (java-file)
+  "Compile JAVA-FILE if necessary.
+
+Compile JAVA-FILE using `javarun-javac-command', unless there are
+no changes since last compilation. Return t on success."
+  (unless (file-exists-p java-file)
+    (error "Java file not found."))
+  (let ((class-file (concat (file-name-sans-extension java-file) ".class")))
+    (if (and (file-exists-p class-file)
+             (time-less-p (nth 5 (file-attributes java-file))
+                          (nth 5 (file-attributes class-file))))
+        t
+      (zerop (call-process (concat (file-name-as-directory javarun-java-path)
+                                   javarun-javac-command)
+                           nil "*javac-output*" t java-file)))))
 
 (provide 'javarun)
 
