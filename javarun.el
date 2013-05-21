@@ -63,11 +63,11 @@ set to cygwin."
 (defvar javarun-old-window-configuration nil
   "The window configuration as it was before a javarun popup.")
 
-(define-derived-mode javarun-output-mode special-mode "Javarun Output")
+(define-derived-mode javarun-popup-mode special-mode "Javarun Popup")
 
-(define-key javarun-output-mode-map (kbd "q") 'javarun-bury-output-buffer)
-(define-key javarun-output-mode-map (kbd "c") 'javarun-clear-output-buffer)
-(define-key javarun-output-mode-map (kbd "s") 'javarun-save-output-buffer)
+(define-key javarun-popup-mode-map (kbd "q") 'javarun-bury-popup-buffer)
+(define-key javarun-popup-mode-map (kbd "c") 'javarun-clear-popup-buffer)
+(define-key javarun-popup-mode-map (kbd "s") 'javarun-save-popup-buffer)
 
 (define-minor-mode javarun-mode
   "Toggle Javarun mode.
@@ -89,7 +89,7 @@ Keybindings:
   :lighter " JRun"
   :keymap '(("\C-c\C-c" . javarun)))
 
-(defun javarun-bury-output-buffer (&optional buffer)
+(defun javarun-bury-popup-buffer (&optional buffer)
   "Bury buffer and restore old window configuration.
 
 If no BUFFER is given, it defaults to the `current-buffer'."
@@ -97,14 +97,14 @@ If no BUFFER is given, it defaults to the `current-buffer'."
   (bury-buffer (or buffer (current-buffer)))
   (set-window-configuration javarun-old-window-configuration))
 
-(defun javarun-clear-output-buffer (&optional buffer)
+(defun javarun-clear-popup-buffer (&optional buffer)
   "Clear the javarun output buffer or BUFFER, if given."
   (interactive)
   (let ((inhibit-read-only t))
     (with-current-buffer (or buffer (get-buffer "*java-output*"))
       (erase-buffer))))
 
-(defun javarun-save-output-buffer (&optional buffer)
+(defun javarun-save-popup-buffer (&optional buffer)
   "Copy contents of the output buffer or BUFFER, if given."
   (interactive)
   (with-current-buffer (or buffer (get-buffer "*java-output*"))
@@ -127,12 +127,14 @@ If no BUFFER is given, it defaults to the `current-buffer'."
 
 The old window configuration is saved in the variable
 `javarun-old-window-configuration'. The function
-`javarun-bury-output-buffer' closes the window, buries the output
+`javarun-bury-popup-buffer' closes the window, buries the popup
 buffer, and restores the old window configuration afterwards."
   (let ((buffer (or buffer (get-buffer "*java-output*"))))
     (unless (javarun-buffer-visible-p buffer)
       (setq javarun-old-window-configuration (current-window-configuration)))
-    (let ((window (display-buffer "*java-output*")))
+    (with-current-buffer buffer
+      (javarun-popup-mode))
+    (let ((window (display-buffer buffer)))
       (select-window window)
       (goto-char (point-max)))))
 
@@ -159,12 +161,12 @@ command line arguments interactively using the function
 `javarun-read-args'."
   (interactive "p")
   (when javarun-clear-java-output
-    (javarun-clear-output-buffer))
+    (javarun-clear-popup-buffer))
   (and (buffer-modified-p)
        (y-or-n-p "Buffer modified; save? ")
        (save-buffer))
   (if (not (javarun-compile (javarun-generate-buffer-file-name)))
-      (javarun-popup-buffer)
+      (javarun-popup-buffer (get-buffer "*javac-output*"))
     (apply 'call-process
            (concat (file-name-as-directory javarun-java-path)
                    javarun-java-program)
@@ -172,8 +174,6 @@ command line arguments interactively using the function
            (file-name-nondirectory
             (file-name-sans-extension (buffer-file-name)))
            (when (/= argsp 1) (javarun-read-args)))
-    (with-current-buffer "*java-output*"
-      (javarun-output-mode))
     (javarun-popup-buffer)))
 
 (defun javarun-generate-buffer-file-name (&optional buffer)
