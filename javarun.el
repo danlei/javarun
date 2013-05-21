@@ -58,7 +58,7 @@ with non-Cygwin Java. It is only relevant, if `system-type' is
 set to cygwin."
   :type 'directory)
 
-(defcustom javarun-clear-java-output nil
+(defcustom javarun-clear-java-output t
   "If t, clear the java output buffer before each run."
   :type 'boolean)
 
@@ -70,7 +70,7 @@ set to cygwin."
   "If t, switch to popup buffers after popping up."
   :type 'boolean)
 
-(defcustom javarun-popup-scroll-to-bottom t
+(defcustom javarun-popup-scroll-to-bottom nil
   "If t, scroll to the bottom of popup buffers."
   :type 'boolean)
 
