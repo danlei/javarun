@@ -11,6 +11,11 @@ programming courses.
 
 INSTALLATION
 
+If you use package.el, and configured it to use marmalade
+(http://marmalade-repo.org/), this package can be installed via:
+
+    M-x package-install RET javarun RET
+
 Put javarun.el on your load-path and require it:
 
     (add-to-list 'load-path "/path/to/javarun/")
@@ -30,7 +35,7 @@ also have to set the path to the executables:
 
 Add these forms to your .emacs, and evaluate each of them by putting
 the cursor after them and typing C-x C-e. Otherwise, save the file and
-restart Emacs. The javarun-java-path and a few other options may also
+restart Emacs. The javarun-java-path and a few other options can also
 be set using M-x customize-group RET javarun RET.
 
 
@@ -41,6 +46,14 @@ which tries to compile the Java file you're editing if necessary, i.e.
 if the source file is younger than the corresponding class file. On
 success, the program is run, and its output shown in a popup buffer.
 Otherwise, the compiler error messages are shown.
+
+If invoked with a prefix argument, command line arguments can be
+passed to the program. They are read as a whitespace-separated list of
+Emacs Lisp expressions, so strings have to be quoted.
+
+For example, C-u C-c C-c RET "foo bar" (+ 1 2) "bar" RET will try to
+compile the file of the current buffer and, if successful, will pass
+the command line arguments "foo bar", 3, and "baz" to the program.
 
 The popup buffer may be closed by pressing 'q' and the former window
 configuration will be restored.

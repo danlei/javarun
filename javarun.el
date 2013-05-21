@@ -4,7 +4,8 @@
 
 ;; Author: Daniel H. Leidisch <public@leidisch.net>
 ;; Keywords: languages
-;; Homepage: <https://github.com/danlei/javarun>
+;; URL: <https://github.com/danlei/javarun>
+;; Version: 0.1
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -71,7 +72,7 @@ set to cygwin."
   :type 'boolean)
 
 (defcustom javarun-popup-scroll-to-bottom nil
-  "If t, scroll to the bottom of popup buffers."
+  "If t, scroll to the bottom of popup buffers after popping up."
   :type 'boolean)
 
 
@@ -95,6 +96,8 @@ Javarun is intended to be a useful shortcut when developing small
 command-line Java programs. This minor mode provides the command
 `javarun', which will compile and run a Java file and show its
 results in a popup buffer.
+
+For further options, see the customize group `javarun'.
 
 javarun.el is located at URL `http://github.com/danlei/javarun'.
 
@@ -138,12 +141,16 @@ If no BUFFER is given, it defaults to the `current-buffer'."
   (consp (memq buffer (javarun-visible-buffers))))
 
 (defun javarun-popup-buffer (&optional buffer)
-  "Popup and switch to the current buffer or BUFFER, if given.
+  "Popup the current buffer or BUFFER, if given.
 
-The old window configuration is saved in the variable
+Save the old window configuration in the variable
 `javarun-old-window-configuration'. The function
-`javarun-bury-popup-buffer' closes the window, buries the popup
-buffer, and restores the old window configuration afterwards."
+`javarun-bury-popup-buffer' buries the popup buffer, and restores
+the old window configuration. If the variable
+`javarun-switch-to-popup-buffer' is t, switch to the popup buffer
+after popping up. If the variable
+`javarun-popup-scroll-to-bottom' is t, scroll to bottom after
+popping up."
   (let ((buffer (or buffer (current-buffer))))
     (unless (javarun-buffer-visible-p buffer)
       (setq javarun-old-window-configuration (current-window-configuration)))
@@ -159,9 +166,9 @@ buffer, and restores the old window configuration afterwards."
             (goto-char (point-max))))))))
 
 (defun javarun-read-args ()
-  "Read command line arguments interactively.
+  "Read whitespace-separated command line arguments interactively.
 
-All non-string arguments are evaluated."
+All arguments are evaluated as Emacs Lisp forms."
   (mapcar (lambda (x)
             (if (stringp x)
                 x
@@ -174,7 +181,7 @@ All non-string arguments are evaluated."
 
 Clear output buffers if they exist and their respective option,
 i.e. the variable `javarun-clear-java-output' or the variable
-`javarun-clear-javac-output' are set to t."
+`javarun-clear-javac-output' is set to t."
   (let ((java-buffer (get-buffer "*java-output*"))
         (javac-buffer (get-buffer "*javac-output*")))
     (and java-buffer
@@ -188,20 +195,25 @@ i.e. the variable `javarun-clear-java-output' or the variable
   "Offer to save the current buffer if needed, or BUFFER, if given."
   (let ((buffer (or buffer (current-buffer))))
     (and (buffer-modified-p buffer)
-         (y-or-n-p "Buffer modified; save? ")
+         (y-or-n-p "Buffer modified; save? ") ;
          (with-current-buffer buffer
            (save-buffer)))))
 
 (defun javarun (argsp)
   "Compile, and (if successful) run a Java program.
 
-The program's output (or the compiler error messages, if
-compilation failed) are shown in a popup window by
+The output of the program (or the compiler error messages, if
+the compilation failed) are shown in a popup window by
 `javarun-popup-buffer'.
 
-If a positive prefix argument ARGSP is given, read a string of
-command line arguments interactively using the function
-`javarun-read-args'."
+If a positive prefix argument ARGSP is given, read command line
+arguments interactively using the function `javarun-read-args'.
+The arguments are evaluated expressions, so strings have to be
+quoted. For example:
+
+  \"foo bar\" (+ 1 2) \"baz\"
+
+will pass the arguments \"foo bar\", 3, and \"bar\"."
   (interactive "p")
   (javarun-maybe-clear-buffers)
   (javarun-offer-save)
@@ -222,7 +234,7 @@ command line arguments interactively using the function
 Mangle the path for use under Cygwin. Throw an error, if BUFFER
 has no associated file."
   (let* ((buffer-file (or (buffer-file-name (or buffer (current-buffer)))
-                          (error "Buffer has no associated file."))))
+                          (error "Buffer has no associated file"))))
     (if (eq system-type 'cygwin)
         (concat (file-name-as-directory javarun-cygdir)
                 (substring buffer-file 1))
@@ -234,7 +246,7 @@ has no associated file."
 Compile JAVA-FILE using `javarun-javac-program', unless there are
 no changes since last compilation. Return t on success."
   (unless (file-exists-p java-file)
-    (error "Java file not found."))
+    (error "Java file not found"))
   (let ((class-file (concat (file-name-sans-extension java-file) ".class")))
     (if (and (file-exists-p class-file)
              (time-less-p (nth 5 (file-attributes java-file))
