@@ -29,7 +29,7 @@
 
 (defgroup javarun '()
   "Java compilation convenience for small command-line programs."
-  :group 'tools
+  :group 'languages
   :prefix "javarun")
 
 (defcustom javarun-java-path ""
