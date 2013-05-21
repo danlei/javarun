@@ -63,6 +63,10 @@ set to cygwin."
   "If t, clear the javac output buffer before each run."
   :type 'boolean)
 
+(defcustom javarun-switch-to-popup-buffer t
+  "If t, switch to popup buffers after popping up."
+  :type 'boolean)
+
 
 (defvar javarun-old-window-configuration nil
   "The window configuration as it was before a javarun popup.")
@@ -139,8 +143,11 @@ buffer, and restores the old window configuration afterwards."
     (with-current-buffer buffer
       (javarun-popup-mode))
     (let ((window (display-buffer buffer)))
-      (select-window window)
-      (goto-char (point-max)))))
+      (if javarun-switch-to-popup-buffer
+          (progn (select-window window t)
+                 (goto-char (point-max)))
+        (with-selected-window window
+          (goto-char (point-max)))))))
 
 (defun javarun-read-args ()
   "Read command line arguments interactively.
