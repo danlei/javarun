@@ -70,7 +70,7 @@ set to cygwin."
 (define-key javarun-output-mode-map (kbd "s") 'javarun-save-output-buffer)
 
 (define-minor-mode javarun-mode
-    "Toggle Javarun mode.
+  "Toggle Javarun mode.
 
 With no argument, this command toggles the mode. A non-null
 prefix argument turns on the mode; a null prefix argument turns
