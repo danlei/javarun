@@ -111,18 +111,30 @@ If no BUFFER is given, it defaults to the `current-buffer'."
     (save-excursion
       (kill-ring-save (point-min) (point-max)))))
 
+(defun javarun-visible-buffers ()
+  "Return the list of visible buffers."
+  (let ((visible-buffers '()))
+    (walk-windows (lambda (window)
+                    (push (window-buffer window) visible-buffers)))
+    visible-buffers))
+
+(defun javarun-buffer-visible-p (buffer)
+  "Return t if BUFFER is visible."
+  (consp (memq buffer (javarun-visible-buffers))))
+
 (defun javarun-popup-buffer (&optional buffer)
-  "Popup the java output buffer or BUFFER, if given.
+  "Popup and switch to the java output buffer or BUFFER, if given.
 
 The old window configuration is saved in the variable
 `javarun-old-window-configuration'. The function
 `javarun-bury-output-buffer' closes the window, buries the output
 buffer, and restores the old window configuration afterwards."
-  (setq javarun-old-window-configuration (current-window-configuration))
-  (split-window-vertically)
-  (other-window 1)
-  (switch-to-buffer (or buffer (get-buffer "*java-output*")))
-  (javarun-output-mode))
+  (let ((buffer (or buffer (get-buffer "*java-output*"))))
+    (unless (javarun-buffer-visible-p buffer)
+      (setq javarun-old-window-configuration (current-window-configuration)))
+    (let ((window (display-buffer "*java-output*")))
+      (select-window window)
+      (goto-char (point-max)))))
 
 (defun javarun-read-args ()
   "Read command line arguments interactively.
@@ -160,6 +172,8 @@ command line arguments interactively using the function
            (file-name-nondirectory
             (file-name-sans-extension (buffer-file-name)))
            (when (/= argsp 1) (javarun-read-args)))
+    (with-current-buffer "*java-output*"
+      (javarun-output-mode))
     (javarun-popup-buffer)))
 
 (defun javarun-generate-buffer-file-name (&optional buffer)
