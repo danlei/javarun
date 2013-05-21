@@ -1,9 +1,10 @@
-;;; javarun.el --- minor mode for quick development of Java programs
+;;; javarun.el --- Minor mode for quick development of Java programs
 
-;; Copyright (C) 2010 Daniel H. Leidisch
+;; Copyright (C) 2010, 2013 Daniel H. Leidisch
 
-;; Author: Daniel H. Leidisch <spam AT leidisch DOT net>
+;; Author: Daniel H. Leidisch <public@leidisch.net>
 ;; Keywords: languages
+;; Homepage: <https://github.com/danlei/javarun>
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -23,6 +24,8 @@
 
 ;; This minor mode allows for quick compilation and running of Java
 ;; programs, making the edit-compile-run cycle a little less annoying.
+;; On success, the output of the program is shown in a popup buffer.
+;; Compilation errors otherwise.
 
 ;;; Code:
 
