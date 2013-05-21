@@ -59,6 +59,10 @@ set to cygwin."
   "If t, clear the java output buffer before each run."
   :type 'boolean)
 
+(defcustom javarun-clear-javac-output t
+  "If t, clear the javac output buffer before each run."
+  :type 'boolean)
+
 
 (defvar javarun-old-window-configuration nil
   "The window configuration as it was before a javarun popup.")
@@ -162,6 +166,8 @@ command line arguments interactively using the function
   (interactive "p")
   (when javarun-clear-java-output
     (javarun-clear-popup-buffer (get-buffer "*java-output*")))
+  (when javarun-clear-javac-output
+    (javarun-clear-popup-buffer (get-buffer "*javac-output*")))
   (and (buffer-modified-p)
        (y-or-n-p "Buffer modified; save? ")
        (save-buffer))
