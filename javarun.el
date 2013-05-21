@@ -67,6 +67,10 @@ set to cygwin."
   "If t, switch to popup buffers after popping up."
   :type 'boolean)
 
+(defcustom javarun-popup-scroll-to-bottom t
+  "If t, scroll to the bottom of popup buffers."
+  :type 'boolean)
+
 
 (defvar javarun-old-window-configuration nil
   "The window configuration as it was before a javarun popup.")
@@ -145,9 +149,11 @@ buffer, and restores the old window configuration afterwards."
     (let ((window (display-buffer buffer)))
       (if javarun-switch-to-popup-buffer
           (progn (select-window window t)
-                 (goto-char (point-max)))
+                 (when javarun-popup-scroll-to-bottom
+                   (goto-char (point-max))))
         (with-selected-window window
-          (goto-char (point-max)))))))
+          (when javarun-popup-scroll-to-bottom
+            (goto-char (point-max))))))))
 
 (defun javarun-read-args ()
   "Read command line arguments interactively.
