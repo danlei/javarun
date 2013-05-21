@@ -98,16 +98,16 @@ If no BUFFER is given, it defaults to the `current-buffer'."
   (set-window-configuration javarun-old-window-configuration))
 
 (defun javarun-clear-popup-buffer (&optional buffer)
-  "Clear the javarun output buffer or BUFFER, if given."
+  "Clear the current buffer or BUFFER, if given."
   (interactive)
   (let ((inhibit-read-only t))
-    (with-current-buffer (or buffer (get-buffer "*java-output*"))
+    (with-current-buffer (or buffer (current-buffer))
       (erase-buffer))))
 
 (defun javarun-save-popup-buffer (&optional buffer)
-  "Copy contents of the output buffer or BUFFER, if given."
+  "Copy contents of the current buffer or BUFFER, if given."
   (interactive)
-  (with-current-buffer (or buffer (get-buffer "*java-output*"))
+  (with-current-buffer (or buffer (current-buffer))
     (save-excursion
       (kill-ring-save (point-min) (point-max)))))
 
@@ -123,13 +123,13 @@ If no BUFFER is given, it defaults to the `current-buffer'."
   (consp (memq buffer (javarun-visible-buffers))))
 
 (defun javarun-popup-buffer (&optional buffer)
-  "Popup and switch to the java output buffer or BUFFER, if given.
+  "Popup and switch to the current buffer or BUFFER, if given.
 
 The old window configuration is saved in the variable
 `javarun-old-window-configuration'. The function
 `javarun-bury-popup-buffer' closes the window, buries the popup
 buffer, and restores the old window configuration afterwards."
-  (let ((buffer (or buffer (get-buffer "*java-output*"))))
+  (let ((buffer (or buffer (current-buffer))))
     (unless (javarun-buffer-visible-p buffer)
       (setq javarun-old-window-configuration (current-window-configuration)))
     (with-current-buffer buffer
@@ -161,7 +161,7 @@ command line arguments interactively using the function
 `javarun-read-args'."
   (interactive "p")
   (when javarun-clear-java-output
-    (javarun-clear-popup-buffer))
+    (javarun-clear-popup-buffer (get-buffer "*java-output*")))
   (and (buffer-modified-p)
        (y-or-n-p "Buffer modified; save? ")
        (save-buffer))
@@ -174,7 +174,7 @@ command line arguments interactively using the function
            (file-name-nondirectory
             (file-name-sans-extension (buffer-file-name)))
            (when (/= argsp 1) (javarun-read-args)))
-    (javarun-popup-buffer)))
+    (javarun-popup-buffer (get-buffer "*java-output*"))))
 
 (defun javarun-generate-buffer-file-name (&optional buffer)
   "Return buffer file name of current buffer or BUFFER.
