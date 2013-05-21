@@ -37,15 +37,15 @@
 
 This variable only needs to be set, if the java and javac
 programs are not on the system path."
-  :type '(directory))
+  :type 'directory)
 
 (defcustom javarun-javac-program "javac"
   "The program used to compile the Java program."
-  :type '(file))
+  :type 'file)
 
 (defcustom javarun-java-program "java"
   "The program used to run the compiled Java program."
-  :type '(file))
+  :type 'file)
 
 (defcustom javarun-cygdir "C:/cygwin/"
   "The Cygwin root directory path.
@@ -53,12 +53,11 @@ programs are not on the system path."
 This variable is meant be used with Cygwin Emacs in combination
 with non-Cygwin Java. It is only relevant, if `system-type' is
 set to cygwin."
-  :type '(directory))
+  :type 'directory)
 
 (defcustom javarun-clear-java-output nil
   "If t, clear the java output buffer before each run."
-  :type '(choice (const :tag "Off" nil)
-                 (const :tag "On" t)))
+  :type 'boolean)
 
 
 (defvar javarun-old-window-configuration nil
