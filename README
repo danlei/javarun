@@ -2,37 +2,45 @@ DESCRIPTION
 
 Emacs minor mode for quick compilation and running of Java programs.
 
-This is a convenient and light-weight minor mode which allows to
+This is a convenient and light-weight minor mode, which allows to
 compile and run Java programs without much disruption of work flow. It
 is mostly intended to be used with small and medium sized command line
-programs.
+programs, like the exercises one is supposed to write in first
+programming courses.
 
 
 INSTALLATION
 
-Put javarun.el on your load-path:
+Put javarun.el on your load-path and require it:
 
-(add-to-list 'load-path "/path/to/javarun")
+    (add-to-list 'load-path "/path/to/javarun/")
+    (require 'javarun)
 
 If you want javarun-mode to be activated automatically whenever
-java-mode runs, add it to java-mode-hook:
+java-mode runs, add it to the java-mode-hook:
 
-(add-hook 'java-mode-hook
-          (lambda ()
-            (javarun-mode 1))
+    (add-hook 'java-mode-hook
+              (lambda ()
+                (javarun-mode 1)))
 
-If the javac and java commands are not on your system path, you will
+If the javac and java programs are not on your system path, you will
 also have to set the path to the executables:
 
-(setq javarun-java-path "/path/to/java/installation/")
+    (setq javarun-java-path "/path/to/java/installation/")
+
+Add these forms to your .emacs, and evaluate each of them by putting
+the cursor after them and typing C-x C-e. Otherwise, save the file and
+restart Emacs. The javarun-java-path and a few other options may also
+be set using M-x customize-group RET javarun RET.
 
 
 USAGE
 
-Javarun provides the command javarun (bound to C-c C-c), which tries
-to compile the Java file you're editing. If compilation succeeds, the
-programs output is shown in a popup buffer. Otherwise, the compiler
-error messages are shown.
+Javarun provides the command javarun (bound to C-c C-c by default),
+which tries to compile the Java file you're editing if necessary, i.e.
+if the source file is younger than the corresponding class file. On
+success, the program is run, and its output shown in a popup buffer.
+Otherwise, the compiler error messages are shown.
 
 The popup buffer may be closed by pressing 'q' and the former window
 configuration will be restored.
