@@ -153,6 +153,29 @@ All non-string arguments are evaluated."
           (car (read-from-string
                 (concat "(" (read-string "Command line arguments: ") ")")))))
 
+(defun javarun-maybe-clear-buffers ()
+  "Clear output buffers if configured to do so.
+
+Clear output buffers if they exist and their respective option,
+i.e. the variable `javarun-clear-java-output' or the variable
+`javarun-clear-javac-output' are set to t."
+  (let ((java-buffer (get-buffer "*java-output*"))
+        (javac-buffer (get-buffer "*javac-output*")))
+    (and java-buffer
+         javarun-clear-java-output
+         (javarun-clear-popup-buffer java-buffer))
+    (and javac-buffer
+         javarun-clear-javac-output
+         (javarun-clear-popup-buffer javac-buffer))))
+
+(defun javarun-offer-save (&optional buffer)
+  "Offer to save the current buffer if needed, or BUFFER, if given."
+  (let ((buffer (or buffer (current-buffer))))
+    (and (buffer-modified-p buffer)
+         (y-or-n-p "Buffer modified; save? ")
+         (with-current-buffer buffer
+           (save-buffer)))))
+
 (defun javarun (argsp)
   "Compile, and (if successful) run a Java program.
 
@@ -164,13 +187,8 @@ If a positive prefix argument ARGSP is given, read a string of
 command line arguments interactively using the function
 `javarun-read-args'."
   (interactive "p")
-  (when javarun-clear-java-output
-    (javarun-clear-popup-buffer (get-buffer "*java-output*")))
-  (when javarun-clear-javac-output
-    (javarun-clear-popup-buffer (get-buffer "*javac-output*")))
-  (and (buffer-modified-p)
-       (y-or-n-p "Buffer modified; save? ")
-       (save-buffer))
+  (javarun-maybe-clear-buffers)
+  (javarun-offer-save)
   (if (not (javarun-compile (javarun-generate-buffer-file-name)))
       (javarun-popup-buffer (get-buffer "*javac-output*"))
     (apply 'call-process
