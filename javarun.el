@@ -61,19 +61,23 @@ set to cygwin."
 
 (defcustom javarun-clear-java-output t
   "If t, clear the java output buffer before each run."
-  :type 'boolean)
+  :type 'boolean
+  :safe 'booleanp)
 
 (defcustom javarun-clear-javac-output t
   "If t, clear the javac output buffer before each run."
-  :type 'boolean)
+  :type 'boolean
+  :safe 'booleanp)
 
 (defcustom javarun-switch-to-popup-buffer t
   "If t, switch to popup buffers after popping up."
-  :type 'boolean)
+  :type 'boolean
+  :safe 'booleanp)
 
 (defcustom javarun-popup-scroll-to-bottom nil
   "If t, scroll to the bottom of popup buffers after popping up."
-  :type 'boolean)
+  :type 'boolean
+  :safe 'booleanp)
 
 (defcustom javarun-single-file-lazy-compile nil
   "If t, only invoke the compiler if the source actually changed.
@@ -84,7 +88,8 @@ only be invoked, if the source file is younger than its
 respective class file. However, when working with multiple
 changing files, this option should be disabled, since only the
 file of the current buffer will be checked for changes."
-  :type 'boolean)
+  :type 'boolean
+  :safe 'booleanp)
 
 
 (defvar javarun-old-window-configuration nil
