@@ -4,7 +4,7 @@
 
 ;; Author: Daniel H. Leidisch <public@leidisch.net>
 ;; Keywords: languages
-;; URL: <https://github.com/danlei/javarun>
+;; URL: https://github.com/danlei/javarun
 ;; Version: 0.1
 
 ;; This file is NOT part of GNU Emacs.
