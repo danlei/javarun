@@ -75,6 +75,17 @@ set to cygwin."
   "If t, scroll to the bottom of popup buffers after popping up."
   :type 'boolean)
 
+(defcustom javarun-single-file-lazy-compile nil
+  "If t, only invoke the compiler if the source actually changed.
+
+If this option is set, a little time can be saved when repeatedly
+invoking a single file program without changes. The compiler will
+only be invoked, if the source file is younger than its
+respective class file. However, when working with multiple
+changing files, this option should be disabled, since only the
+file of the current buffer will be checked for changes."
+  :type 'boolean)
+
 
 (defvar javarun-old-window-configuration nil
   "The window configuration as it was before a javarun popup.")
@@ -243,14 +254,17 @@ has no associated file."
       buffer-file)))
 
 (defun javarun-compile (java-file)
-  "Compile JAVA-FILE if necessary.
+  "Compile JAVA-FILE.
 
-Compile JAVA-FILE using `javarun-javac-program', unless there are
-no changes since last compilation. Return t on success."
+Compile JAVA-FILE using `javarun-javac-program'. If
+`javarun-single-file-lazy-compile' is t, only invoke the compiler
+if the file of the current buffer has been modified since the
+last compilation. Return t on success."
   (unless (file-exists-p java-file)
     (error "Java file not found"))
   (let ((class-file (concat (file-name-sans-extension java-file) ".class")))
-    (if (and (file-exists-p class-file)
+    (if (and javarun-single-file-lazy-compile
+             (file-exists-p class-file)
              (time-less-p (nth 5 (file-attributes java-file))
                           (nth 5 (file-attributes class-file))))
         t
