@@ -85,6 +85,7 @@ set to cygwin."
 (define-key javarun-popup-mode-map (kbd "c") 'javarun-clear-popup-buffer)
 (define-key javarun-popup-mode-map (kbd "s") 'javarun-save-popup-buffer)
 
+;;;###autoload
 (define-minor-mode javarun-mode
   "Toggle Javarun mode.
 
@@ -199,6 +200,7 @@ i.e. the variable `javarun-clear-java-output' or the variable
          (with-current-buffer buffer
            (save-buffer)))))
 
+;;;###autoload
 (defun javarun (argsp)
   "Compile, and (if successful) run a Java program.
 
